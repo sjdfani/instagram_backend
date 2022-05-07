@@ -11,21 +11,26 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import redis
+import environ
+from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+env = environ.Env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&56&cm5b4nffwkh9rp-t-66(+u+d^k@i*^y+r@#ughb%1(i)_('
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': 'db',
+        'PORT': env('DATABASE_PORT'),
     }
 }
 
@@ -121,3 +131,33 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env('EMAIL_USEREMAIL')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+
+
+Redis_object = redis.Redis(host='redis', port=6379, db=0, password=env(
+    'REDIS_PASSWORD'), decode_responses=True)
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DATETIME_FORMAT': '%s.%f'
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media_root'
