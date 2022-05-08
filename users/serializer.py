@@ -1,4 +1,3 @@
-import email
 from rest_framework import serializers
 from .models import CustomUser
 
@@ -35,3 +34,8 @@ class LoginSerializer(serializers.Serializer):
         if not CustomUser.objects.filter(email=value).exists():
             raise serializers.ValidationError('The email is not exists.')
         return value
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()
