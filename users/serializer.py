@@ -3,6 +3,7 @@ from .models import CustomUser
 from django.core.mail import send_mail
 from config.settings import Redis_object, env
 from .utils import number_generator
+from account.models import Account
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -25,8 +26,9 @@ class RegisterSerializer(serializers.Serializer):
         email = self.validated_data['email']
         username = self.validated_data['username']
         password = self.validated_data['password']
-        CustomUser.objects.create(
+        user = CustomUser.objects.create(
             email=email, username=username, password=password)
+        Account.objects.create(user=user)
 
 
 class LoginSerializer(serializers.Serializer):
