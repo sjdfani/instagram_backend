@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from config.settings import Redis_object
 from users.models import CustomUser
-from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer
+from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ForgetPasswordSerializer, VerifyForgetPasswordSerializer
 from .utils import get_tokens_for_user
 from rest_framework.permissions import IsAuthenticated
 
@@ -52,3 +53,33 @@ class ChangePassword(APIView):
             else:
                 message = {'old-password': 'your password is incorrect.'}
                 return Response(message, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ForgetPassword(APIView):
+    def post(self, request):
+        serializer = ForgetPasswordSerializer(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+
+
+class VerifyForgetPassword(APIView):
+    def post(self, request):
+        serializer = VerifyForgetPasswordSerializer(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            email = serializer.validated_data['email']
+            code = serializer.validated_data['code']
+            password = serializer.validated_data['password']
+            redis_code = Redis_object.get(email)
+            if code == redis_code:
+                user = CustomUser.objects.get(email=email)
+                user.set_password(password)
+                user.save()
+                return Response(status=status.HTTP_200_OK)
+            else:
+                message = {'code': 'Your input code is invalid.'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
