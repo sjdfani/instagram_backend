@@ -9,6 +9,7 @@ from account.models import Account
 class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()
     username = serializers.CharField(max_length=20)
+    birthdate = serializers.DateField(required=False)
     password = serializers.CharField(max_length=50)
 
     def validate_email(self, value):
@@ -26,9 +27,16 @@ class RegisterSerializer(serializers.Serializer):
         email = self.validated_data['email']
         username = self.validated_data['username']
         password = self.validated_data['password']
+        try:
+            birthdate = self.validated_data['birthdate']
+        except:
+            birthdate = False
         user = CustomUser.objects.create(
             email=email, username=username, password=password)
-        Account.objects.create(user=user)
+        if birthdate:
+            Account.objects.create(user=user, birthdate=birthdate)
+        else:
+            Account.objects.create(user=user)
 
 
 class LoginSerializer(serializers.Serializer):
