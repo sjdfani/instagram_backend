@@ -8,7 +8,7 @@ class Language(models.TextChoices):
 
 
 class Account(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,name='user')
     photo = models.ImageField(
         upload_to='profile-photo/', null=True, blank=True)
     bio = models.CharField(max_length=200, blank=True, null=True)
