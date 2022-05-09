@@ -80,3 +80,9 @@ class VerifyForgetPasswordSerializer(serializers.Serializer):
         if not CustomUser.objects.filter(email=value).exists():
             raise serializers.ValidationError('The email is not exists.')
         return value
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'date_joined']
