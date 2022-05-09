@@ -1,3 +1,13 @@
-from django.shortcuts import render
+from rest_framework.generics import ListAPIView
+from .models import Account
+from .serializer import AccountSerializer
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
+
+class AccountDetails(ListAPIView):
+    serializer_class = AccountSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        request = self.request
+        return Account.objects.filter(user=request.user)
