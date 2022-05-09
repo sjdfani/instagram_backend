@@ -6,6 +6,8 @@ from users.models import CustomUser
 from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ForgetPasswordSerializer, VerifyForgetPasswordSerializer
 from .utils import get_tokens_for_user
 from rest_framework.permissions import IsAuthenticated
+from account.models import Account
+from django.utils import timezone
 
 
 class Register(APIView):
@@ -29,6 +31,9 @@ class Login(APIView):
             user = CustomUser.objects.get(email=email)
             if user.check_password(password):
                 tokens = get_tokens_for_user(user)
+                account = Account.objects.get(user=user)
+                account.last_login = timezone.now()
+                account.save()
                 return Response(tokens, status=status.HTTP_200_OK)
             else:
                 message = {'password': 'your password is incorrect.'}
