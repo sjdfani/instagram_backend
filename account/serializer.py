@@ -31,6 +31,12 @@ class UpdateInformationSerializer(serializers.Serializer):
 class ChangeLanguageSerializer(serializers.Serializer):
     language = serializers.CharField(max_length=3)
 
+    def validate_language(self, value):
+        if value not in ['fa', 'en']:
+            raise serializers.ValidationError(
+                'you can choose fa or en for language.')
+        return value
+
     def save(self, **kwargs):
         language = self.validated_data['language']
         request = self.context['request']
