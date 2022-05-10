@@ -40,3 +40,14 @@ class ChangeLanguageSerializer(serializers.Serializer):
         elif language == 'en':
             account.language = Language.ENGLISH
         account.save()
+
+
+class ChangeProfilePhotoSerializer(serializers.Serializer):
+    photo = serializers.ImageField()
+
+    def save(self, **kwargs):
+        photo = self.validated_data['photo']
+        request = self.context['request']
+        account = Account.objects.get(user=request.user)
+        account.photo = photo
+        account.save()
