@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Account
+from .models import Account, Language
 from users.serializer import UserSerializer
 
 
@@ -25,4 +25,18 @@ class UpdateInformationSerializer(serializers.Serializer):
         account = Account.objects.get(user=request.user)
         account.bio = bio
         account.birthdate = birthdate
+        account.save()
+
+
+class ChangeLanguageSerializer(serializers.Serializer):
+    language = serializers.CharField(max_length=3)
+
+    def save(self, **kwargs):
+        language = self.validated_data['language']
+        request = self.context['request']
+        account = Account.objects.get(user=request.user)
+        if language == 'fa':
+            account.language = Language.PERSIAN
+        elif language == 'en':
+            account.language = Language.ENGLISH
         account.save()
