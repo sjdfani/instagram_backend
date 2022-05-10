@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from config.settings import Redis_object
 from users.models import CustomUser
-from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ForgetPasswordSerializer, VerifyForgetPasswordSerializer
+from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ForgetPasswordSerializer, VerifyForgetPasswordSerializer, ChangeUsernameSerializer
 from .utils import get_tokens_for_user
 from rest_framework.permissions import IsAuthenticated
 from account.models import Account
@@ -88,3 +88,15 @@ class VerifyForgetPassword(APIView):
             else:
                 message = {'code': 'Your input code is invalid.'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangeUsername(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangeUsernameSerializer(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)

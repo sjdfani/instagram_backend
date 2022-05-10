@@ -86,3 +86,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'date_joined']
+
+
+class ChangeUsernameSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=20)
+
+    def save(self, **kwargs):
+        request = self.context['request']
+        username = self.validated_data['username']
+        user = CustomUser.objects.get(email=request.user.email)
+        user.username = username
+        user.save()
