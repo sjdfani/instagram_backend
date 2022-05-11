@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Post
 
-# Register your models here.
+
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('account', 'created_at', 'updated_at', 'status')
+    list_filter = ('account', 'status')
+    ordering = ('-created_at',)
