@@ -14,3 +14,13 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return self.account.user.email
+
+
+class Tags(models.Model):
+    post = models.ManyToManyField(Post, name='post')
+    name = models.CharField(max_length=20)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.name
