@@ -9,7 +9,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('post',  'name', 'status', 'created_at')
+    list_display = ('name', 'status', 'created_at')
     list_filter = ('post', 'status')
     ordering = ('-created_at',)
 
