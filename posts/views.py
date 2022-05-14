@@ -1,5 +1,5 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated,Http404
+from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializer import CreatePostSerializer, ListPostSerializer, RetrieveUpdateDestroyPostSerializer, RetrievePostSerializer
 
