@@ -8,6 +8,7 @@ from .utils import get_tokens_for_user
 from rest_framework.permissions import IsAuthenticated
 from account.models import Account
 from django.utils import timezone
+from account.serializer import AccountSerializer
 
 
 class Register(APIView):
@@ -34,7 +35,12 @@ class Login(APIView):
                 account = Account.objects.get(user=user)
                 account.last_login = timezone.now()
                 account.save()
-                return Response(tokens, status=status.HTTP_200_OK)
+                account_info = AccountSerializer(account)
+                data = dict()
+                data['account'] = account_info.data
+                data['tokens'] = tokens
+                data['message']='User login successfully'
+                return Response(data, status=status.HTTP_200_OK)
             else:
                 message = {'password': 'your password is incorrect.'}
                 return Response(message, status=status.HTTP_401_UNAUTHORIZED)
