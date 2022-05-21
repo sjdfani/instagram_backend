@@ -17,9 +17,9 @@ class RegisterSerializer(serializers.Serializer):
         return value
 
     def validate_password(self, value):
-        if len(value) < 8:
+        if len(value) < 6:
             raise serializers.ValidationError(
-                'The size of password must be 8 or more.')
+                'The size of password must be 6 or more.')
         return value
 
     def save(self, **kwargs):
