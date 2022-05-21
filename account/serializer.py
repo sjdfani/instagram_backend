@@ -57,3 +57,14 @@ class ChangeProfilePhotoSerializer(serializers.Serializer):
         account = Account.objects.get(user=request.user)
         account.photo = photo
         account.save()
+
+
+class SetBirthdateSerializer(serializers.Serializer):
+    birthdate = serializers.DateField()
+
+    def save(self, **kwargs):
+        request = self.context['request']
+        birthdate = self.validated_data['birthdate']
+        account = Account.objects.get(user=request.user)
+        account.birthdate = birthdate
+        account.save()
