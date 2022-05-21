@@ -26,7 +26,8 @@ class UpdateInformation(APIView):
         )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=status.HTTP_200_OK)
+            message = {'message': 'Update informations is successful.'}
+            return Response(message, status=status.HTTP_200_OK)
 
 
 class ChangeLanguage(APIView):
@@ -38,7 +39,8 @@ class ChangeLanguage(APIView):
         )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=status.HTTP_200_OK)
+            message = {'message': 'Change language is successful.'}
+            return Response(message, status=status.HTTP_200_OK)
 
 
 class ChangeProfilePhoto(APIView):
@@ -51,7 +53,8 @@ class ChangeProfilePhoto(APIView):
         )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=status.HTTP_200_OK)
+            message = {'message': 'Change profile photo is successful.'}
+            return Response(message, status=status.HTTP_200_OK)
 
 
 class SetBirthdate(APIView):
