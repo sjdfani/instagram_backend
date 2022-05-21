@@ -18,7 +18,8 @@ class Register(APIView):
         )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            message = {'message': 'Register is successful.'}
+            return Response(message, status=status.HTTP_201_CREATED)
 
 
 class Login(APIView):
@@ -39,10 +40,10 @@ class Login(APIView):
                 data = dict()
                 data['account'] = account_info.data
                 data['tokens'] = tokens
-                data['message']='User login successfully'
+                data['message'] = 'User login successfully'
                 return Response(data, status=status.HTTP_200_OK)
             else:
-                message = {'password': 'your password is incorrect.'}
+                message = {'message': 'Your password is incorrect.'}
                 return Response(message, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -60,9 +61,10 @@ class ChangePassword(APIView):
             if user.check_password(old_password):
                 user.set_password(new_password)
                 user.save()
-                return Response(status=status.HTTP_200_OK)
+                message = {'message': 'Change password is successful.'}
+                return Response(message, status=status.HTTP_200_OK)
             else:
-                message = {'old-password': 'your password is incorrect.'}
+                message = {'message': 'Your old password is incorrect.'}
                 return Response(message, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -90,9 +92,10 @@ class VerifyForgetPassword(APIView):
                 user = CustomUser.objects.get(email=email)
                 user.set_password(password)
                 user.save()
-                return Response(status=status.HTTP_200_OK)
+                message = {'message': 'Change password is successful.'}
+                return Response(message, status=status.HTTP_200_OK)
             else:
-                message = {'code': 'Your input code is invalid.'}
+                message = {'message': 'Your input code is invalid.'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -105,4 +108,5 @@ class ChangeUsername(APIView):
         )
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(status=status.HTTP_200_OK)
+            message = {'message': 'Change username is successful.'}
+            return Response(message, status=status.HTTP_200_OK)
