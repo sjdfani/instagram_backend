@@ -17,6 +17,14 @@ class AccountDetails(ListAPIView):
         return Account.objects.filter(user=request.user)
 
 
+class AnotherAccountDetails(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AccountSerializer
+
+    def get_queryset(self):
+        return Account.objects.filter(pk=self.kwargs.get('pk'))
+
+
 class UpdateInformation(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -68,11 +76,3 @@ class SetBirthdate(APIView):
             serializer.save()
             message = {'message': 'Set birthdate is successful.'}
             return Response(message, status=status.HTTP_200_OK)
-
-
-class AnotherAccountDetails(ListAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = AccountSerializer
-
-    def get_queryset(self):
-        return Account.objects.filter(pk=self.kwargs.get('pk'))
