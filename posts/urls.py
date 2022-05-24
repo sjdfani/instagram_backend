@@ -7,5 +7,5 @@ urlpatterns = [
     path('create/', CreatePost.as_view()),
     path('list/', ListPost.as_view()),
     path('list/<int:pk>/', RetrieveUpdateDestroyPost.as_view()),
-    path('list/another/<int:pk>/', AnotherListPost.as_view()),
+    path('list/another-acc/<int:pk>/', AnotherListPost.as_view()),
 ]
