@@ -8,7 +8,7 @@ class Comments(models.Model):
         Post, on_delete=models.CASCADE, related_name='comments_post')
     content = models.TextField()
     author = models.ForeignKey(
-        Account, on_delete=models.CASCADE, related_name='comments_acc')
+        Account, on_delete=models.CASCADE, related_name='comments_acc', name='author')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
