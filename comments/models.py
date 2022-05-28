@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from django.db import models
 from posts.models import Post
 from account.models import Account
