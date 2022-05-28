@@ -35,7 +35,7 @@ class AccountDetailsSerializer(serializers.ModelSerializer):
 class ListCommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
-        fields = '__all__'
+        fields = ['content','author']
 
     def to_representation(self, instance):
         res = super().to_representation(instance)
