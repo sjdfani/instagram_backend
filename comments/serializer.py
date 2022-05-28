@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from account.models import Account
 from .models import Comments
 from posts.models import Post
@@ -35,7 +34,7 @@ class AccountDetailsSerializer(serializers.ModelSerializer):
 class ListCommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
-        fields = ['content','author']
+        fields = ['content', 'author']
 
     def to_representation(self, instance):
         res = super().to_representation(instance)
