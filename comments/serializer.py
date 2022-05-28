@@ -17,3 +17,27 @@ class CreateCommentsSerializer(serializers.Serializer):
         content = validated_data['content']
         account = Account.objects.get(user=request.user)
         return Comments.objects.create(post=post, author=account, content=content)
+
+
+class AccountDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['id', 'photo', 'user']
+
+    def username_info(self, obj):
+        return {
+            'username': obj.user.username
+        }
+
+    user = serializers.SerializerMethodField('username_info')
+
+
+class ListCommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        res['author'] = AccountDetailsSerializer(instance.author).data
+        return res
