@@ -24,4 +24,4 @@ class Post(models.Model):
     comment_status = models.BooleanField(default=True)
 
     def __str__(self) -> str:
-        return self.account.user.email
+        return self.title
