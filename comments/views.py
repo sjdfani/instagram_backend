@@ -16,4 +16,4 @@ class ListComments(ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
-        return Comments.objects.filter(post__pk=pk)
+        return Comments.objects.filter(post__pk=pk, status=True)
