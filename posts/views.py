@@ -5,6 +5,7 @@ from .serializer import CreatePostSerializer, ListPostSerializer, RetrieveUpdate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Q
 
 
 class CreatePost(CreateAPIView):
@@ -57,3 +58,12 @@ class CommentStatusPost(APIView):
             serializer.save()
             message = {'message': 'change status is successful.'}
             return Response(message, status=status.HTTP_200_OK)
+
+
+class ExplorarPosts(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ListPostSerializer
+    # pagination_class = BasePagination
+
+    def get_queryset(self):
+        return Post.objects.filter(~Q(account__user=self.request.user))
