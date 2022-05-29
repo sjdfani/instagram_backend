@@ -3,7 +3,8 @@ from .models import Post, Tags
 
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('account', 'created_at', 'updated_at', 'status')
+    list_display = ('account', 'created_at', 'updated_at',
+                    'status', 'comment_status')
     list_filter = ('account', 'status')
     ordering = ('-created_at',)
 

@@ -10,6 +10,7 @@ class Comments(models.Model):
     author = models.ForeignKey(
         Account, on_delete=models.CASCADE, related_name='comments_acc', name='author')
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Comment'

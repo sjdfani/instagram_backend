@@ -21,6 +21,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.BooleanField(default=True)
+    comment_status = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return self.account.user.email
