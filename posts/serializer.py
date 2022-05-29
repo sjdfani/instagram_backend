@@ -94,3 +94,15 @@ class RetrievePostSerializer(serializers.ModelSerializer):
         res['account'] = AccountSerializer(
             instance.account, context={'request': request}).data
         return res
+
+
+class CommentStatusPostSerializer(serializers.Serializer):
+    post = serializers.PrimaryKeyRelatedField(
+        queryset=Post.objects.all()
+    )
+    status = serializers.BooleanField()
+
+    def save(self, **kwargs):
+        post = self.validated_data['post']
+        post.comment_status = self.validated_data['status']
+        post.save()

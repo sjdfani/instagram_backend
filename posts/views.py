@@ -1,7 +1,10 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Post
-from .serializer import CreatePostSerializer, ListPostSerializer, RetrieveUpdateDestroyPostSerializer, RetrievePostSerializer
+from .serializer import CreatePostSerializer, ListPostSerializer, RetrieveUpdateDestroyPostSerializer, RetrievePostSerializer, CommentStatusPostSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class CreatePost(CreateAPIView):
@@ -41,3 +44,16 @@ class RetrieveUpdateDestroyPost(RetrieveUpdateDestroyAPIView):
         if self.request.method == "GET":
             return RetrievePostSerializer
         return RetrieveUpdateDestroyPostSerializer
+
+
+class CommentStatusPost(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CommentStatusPostSerializer(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            message = {'message': 'change status is successful.'}
+            return Response(message, status=status.HTTP_200_OK)
