@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, ListAPIView,RetrieveDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveDestroyAPIView
 from .models import Archive
 from rest_framework.permissions import IsAuthenticated
 from .serializer import CreateArchivePostSerializer, ListArchiveSerializer
@@ -23,5 +23,5 @@ class RetrieveDestroyArchivePost(RetrieveDestroyAPIView):
     serializer_class = ListArchiveSerializer
 
     def get_queryset(self):
-        pk=self.kwargs.get('pk')
+        pk = self.kwargs.get('pk')
         return Archive.objects.filter(pk=pk)
