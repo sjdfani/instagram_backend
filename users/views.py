@@ -8,7 +8,6 @@ from .utils import get_tokens_for_user
 from rest_framework.permissions import IsAuthenticated
 from account.models import Account
 from django.utils import timezone
-from account.serializer import AccountSerializer
 
 
 class Register(APIView):
