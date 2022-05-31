@@ -79,7 +79,7 @@ class VerifyForgetPasswordSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'date_joined']
+        fields = ['username', 'email']
 
 
 class ChangeUsernameSerializer(serializers.Serializer):
