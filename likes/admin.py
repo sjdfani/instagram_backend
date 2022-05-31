@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import Like
 
-# Register your models here.
+
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ('post', 'account', 'created_at')
+    list_filter = ('post', 'account')
+
+
+admin.site.register(Like, LikeAdmin)
