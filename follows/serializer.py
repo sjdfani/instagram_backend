@@ -8,16 +8,21 @@ class CreateFollowingSerializer(serializers.Serializer):
     following = serializers.PrimaryKeyRelatedField(
         queryset=Account.objects.all()
     )
+    account = serializers.PrimaryKeyRelatedField(
+        queryset=Account.objects.all()
+    )
 
-    def validate_following(self, value):
-        if Following.objects.filter(following=value).exists():
-            raise serializers.ValidationError('you followed this account')
-        return value
+    def validate(self, attrs):
+        following = attrs['following']
+        account = attrs['account']
+        if Following.objects.filter(following=following, account=account).exists():
+            raise serializers.ValidationError(
+                {'message': 'you followed this account.'})
+        return attrs
 
     def create(self, validated_data):
-        request = self.context['request']
         following = validated_data['following']
-        account = Account.objects.get(user=request.user)
+        account = validated_data['account']
         return Following.objects.create(account=account, following=following)
 
 
@@ -42,17 +47,21 @@ class CreateFollowerSerializer(serializers.Serializer):
     follower = serializers.PrimaryKeyRelatedField(
         queryset=Account.objects.all()
     )
+    account = serializers.PrimaryKeyRelatedField(
+        queryset=Account.objects.all()
+    )
 
-    def validate_follower(self, value):
-        if Follower.objects.filter(follower=value).exists():
+    def validate(self, attrs):
+        follower = attrs['follower']
+        account = attrs['account']
+        if Follower.objects.filter(follower=follower, account=account).exists():
             raise serializers.ValidationError(
-                'you have this account as follower')
-        return value
+                {'message': 'you have this account as follower.'})
+        return attrs
 
     def create(self, validated_data):
-        request = self.context['request']
         follower = validated_data['follower']
-        account = Account.objects.get(user=request.user)
+        account = validated_data['account']
         return Follower.objects.create(account=account, follower=follower)
 
 

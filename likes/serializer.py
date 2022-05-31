@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from account.models import Account
 from .models import Like
 from posts.models import Post
@@ -14,10 +13,13 @@ class CreateLikeSerializer(serializers.Serializer):
         queryset=Account.objects.all()
     )
 
-    def validate_account(self, value):
-        if Like.objects.filter(account=value).exists():
-            raise serializers.ValidationError('you liked this post.')
-        return value
+    def validate(self, attrs):
+        post = attrs['post']
+        account = attrs['account']
+        if Like.objects.filter(post=post, account=account).exists():
+            raise serializers.ValidationError(
+                {'message': 'you liked this post.'})
+        return attrs
 
     def create(self, validated_data):
         post = validated_data['post']

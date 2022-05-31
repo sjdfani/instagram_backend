@@ -9,15 +9,20 @@ class CreateArchivePostSerializer(serializers.Serializer):
     post = serializers.PrimaryKeyRelatedField(
         queryset=Post.objects.all()
     )
+    account = serializers.PrimaryKeyRelatedField(
+        queryset=Account.objects.all()
+    )
 
-    def validate_post(self, value):
-        if Archive.objects.filter(post=value).exists():
-            raise serializers.ValidationError('You archived this post.')
-        return value
+    def validate(self, attrs):
+        post = attrs['post']
+        account = attrs['account']
+        if Archive.objects.filter(post=post, account=account).exists():
+            raise serializers.ValidationError(
+                {'message': 'you archived this post.'})
+        return attrs
 
     def create(self, validated_data):
-        request = self.context['request']
-        account = Account.objects.get(user=request.user)
+        account = validated_data['account']
         post = validated_data['post']
         return Archive.objects.create(account=account, post=post)
 
