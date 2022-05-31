@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from .models import Account
-from .serializer import AccountSerializer, UpdateInformationSerializer, ChangeLanguageSerializer, ChangeProfilePhotoSerializer, SetBirthdateSerializer
+from .serializer import AccountSerializer, UpdateInformationSerializer, ChangeLanguageSerializer, ChangeProfilePhotoSerializer, SetBirthdateSerializer, CountPostFollowsSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -76,3 +76,15 @@ class SetBirthdate(APIView):
             serializer.save()
             message = {'message': 'Set birthdate is successful.'}
             return Response(message, status=status.HTTP_200_OK)
+
+
+class CountPostFollows(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CountPostFollowsSerializer(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            data = serializer.save()
+            return Response(data, status=status.HTTP_200_OK)
