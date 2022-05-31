@@ -7,7 +7,7 @@ from account.serializer import AccountSerializer
 class TagsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tags
-        fields = '__all__'
+        fields = ['name']
 
 
 class CreatePostSerializer(serializers.Serializer):
