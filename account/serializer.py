@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Account, Language
 from users.serializer import UserSerializer
+from posts.models import Post
+from follows.models import Follower, Following
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -9,8 +11,15 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def to_representation(self, instance):
+        request = self.context['request']
+        account = Account.objects.get(user=request.user)
         res = super().to_representation(instance)
         res['user'] = UserSerializer(instance.user).data
+        res['count'] = {
+            'post': Post.objects.filter(account=account).count(),
+            'follower': Follower.objects.filter(account=account).count(),
+            'following': Following.objects.filter(account=account).count()
+        }
         return res
 
 
