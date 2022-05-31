@@ -5,6 +5,6 @@ app_name = 'likes'
 
 urlpatterns = [
     path('create/', CreateLike.as_view()),
-    path('list/<int:pk>/', ListLike.as_view()),
+    path('list/post/<int:pk>/', ListLike.as_view()),
     path('list/ret-des/<int:pk>/', RetrieveDestroyLike.as_view()),
 ]
