@@ -13,14 +13,14 @@ class TagsSerializer(serializers.ModelSerializer):
 class CreatePostSerializer(serializers.Serializer):
     file = serializers.FileField()
     title = serializers.CharField(max_length=50)
-    caption = serializers.CharField(max_length=200)
-    tags = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Tags.objects.all()
-                                        )
+    caption = serializers.CharField(max_length=200, required=False)
+    tags = serializers.SlugRelatedField(
+        many=True, slug_field='name', queryset=Tags.objects.all())
 
     def create(self, validated_data):
         file = validated_data['file']
         title = validated_data['title']
-        caption = validated_data['caption']
+        caption = validated_data.get('caption')
         tags = validated_data['tags']
         request = self.context['request']
         account = Account.objects.get(user=request.user)
