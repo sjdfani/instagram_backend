@@ -16,7 +16,7 @@ class Post(models.Model):
         Account, on_delete=models.CASCADE, name='account')
     file = models.FileField(upload_to='posts/')
     title = models.CharField(max_length=50)
-    caption = models.TextField()
+    caption = models.TextField(blank=True, null=True)
     tags = models.ManyToManyField(Tags, name='tags')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
