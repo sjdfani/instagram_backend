@@ -36,9 +36,7 @@ class Login(APIView):
                 account = Account.objects.get(user=user)
                 account.last_login = timezone.now()
                 account.save()
-                account_info = AccountSerializer(account)
                 data = dict()
-                data['account'] = account_info.data
                 data['tokens'] = tokens
                 data['message'] = 'User login successfully'
                 return Response(data, status=status.HTTP_200_OK)
