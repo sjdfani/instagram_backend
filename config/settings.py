@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'follows.apps.FollowsConfig',
     'comments.apps.CommentsConfig',
     'archives.apps.ArchivesConfig',
+    'likes.apps.LikesConfig',
 ]
 
 MIDDLEWARE = [
