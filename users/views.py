@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from account.serializer import AccountSerializer
 from config.settings import Redis_object
 from users.models import CustomUser
 from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ForgetPasswordSerializer, VerifyForgetPasswordSerializer, ChangeUsernameSerializer
@@ -35,7 +36,9 @@ class Login(APIView):
                 account = Account.objects.get(user=user)
                 account.last_login = timezone.now()
                 account.save()
+                account_info = AccountSerializer(account)
                 data = dict()
+                data['account'] = account_info.data
                 data['tokens'] = tokens
                 data['message'] = 'User login successfully'
                 return Response(data, status=status.HTTP_200_OK)
