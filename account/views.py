@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from .models import Account
-from .serializer import AccountSerializer, UpdateInformationSerializer, ChangeLanguageSerializer, ChangeProfilePhotoSerializer, SetBirthdateSerializer, CountPostFollowsSerializer
+from .serializer import AccountSerializer, UpdateInformationSerializer, ChangeLanguageSerializer, ChangeProfilePhotoSerializer, SetBirthdateSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
