@@ -29,7 +29,8 @@ class RetrieveUpdateDestroyPost(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Post.objects.filter(id=self.kwargs.get('pk'))
+        user = self.request.user
+        return Post.objects.filter(Q(id=self.kwargs.get('pk')) & Q(account__user=user))
 
     def get_serializer_class(self):
         if self.request.method == "GET":
