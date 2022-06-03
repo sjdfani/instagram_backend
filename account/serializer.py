@@ -13,6 +13,11 @@ class AccountSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         res = super().to_representation(instance)
         res['user'] = UserSerializer(instance.user).data
+        res['count'] = {
+            'post': Post.objects.filter(account__id=instance.id).count(),
+            'follower': Follower.objects.filter(account__id=instance.id).count(),
+            'following': Following.objects.filter(account__id=instance.id).count()
+        }
         return res
 
 
@@ -70,18 +75,3 @@ class SetBirthdateSerializer(serializers.Serializer):
         account = Account.objects.get(user=request.user)
         account.birthdate = birthdate
         account.save()
-
-
-class CountPostFollowsSerializer(serializers.Serializer):
-    account = serializers.PrimaryKeyRelatedField(
-        queryset=Account.objects.all()
-    )
-
-    def save(self, **kwargs):
-        account = self.validated_data['account']
-        data = {
-            'post': Post.objects.filter(account=account).count(),
-            'follower': Follower.objects.filter(account=account).count(),
-            'following': Following.objects.filter(account=account).count()
-        }
-        return data
