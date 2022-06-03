@@ -9,15 +9,6 @@ from rest_framework.parsers import MultiPartParser
 
 
 class AccountDetails(ListAPIView):
-    serializer_class = AccountSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        request = self.request
-        return Account.objects.filter(user=request.user)
-
-
-class AnotherAccountDetails(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AccountSerializer
 
@@ -76,15 +67,3 @@ class SetBirthdate(APIView):
             serializer.save()
             message = {'message': 'Set birthdate is successful.'}
             return Response(message, status=status.HTTP_200_OK)
-
-
-class CountPostFollows(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        serializer = CountPostFollowsSerializer(
-            data=request.data, context={'request': request}
-        )
-        if serializer.is_valid(raise_exception=True):
-            data = serializer.save()
-            return Response(data, status=status.HTTP_200_OK)
