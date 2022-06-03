@@ -76,7 +76,7 @@ class FollowerSerializer(serializers.ModelSerializer):
         res['account'] = AccountSerializer(
             instance.account, context={'request': request}
         ).data
-        res['Follower'] = AccountSerializer(
-            instance.Follower, context={'request': request}
+        res['follower'] = AccountSerializer(
+            instance.follower, context={'request': request}
         ).data
         return res
