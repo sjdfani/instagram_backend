@@ -22,15 +22,6 @@ class ListPost(ListAPIView):
     serializer_class = ListPostSerializer
 
     def get_queryset(self):
-        request = self.request
-        return Post.objects.filter(account__user=request.user)
-
-
-class AnotherListPost(ListAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = ListPostSerializer
-
-    def get_queryset(self):
         return Post.objects.filter(account__id=self.kwargs.get('pk'))
 
 
