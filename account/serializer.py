@@ -25,14 +25,12 @@ class UpdateInformationSerializer(serializers.Serializer):
     bio = serializers.CharField(max_length=200)
     birthdate = serializers.DateField()
 
-    def save(self, **kwargs):
-        bio = self.validated_data['bio']
-        birthdate = self.validated_data['birthdate']
-        request = self.context['request']
-        account = Account.objects.get(user=request.user)
-        account.bio = bio
-        account.birthdate = birthdate
-        account.save()
+    def update(self, instance, validated_data):
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.birthdate = validated_data.get(
+            'birthdate', instance.birthdate)
+        instance.save()
+        return instance
 
 
 class ChangeLanguageSerializer(serializers.Serializer):
