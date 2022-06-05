@@ -18,16 +18,18 @@ class CreatePostSerializer(serializers.Serializer):
     caption = serializers.CharField(max_length=200, required=False)
     tags = serializers.SlugRelatedField(
         many=True, slug_field='name', queryset=Tags.objects.all())
+    comment_status = serializers.BooleanField()
 
     def create(self, validated_data):
         file = validated_data['file']
         title = validated_data['title']
         caption = validated_data.get('caption')
         tags = validated_data['tags']
+        comment_status = validated_data['comment_status']
         request = self.context['request']
         account = Account.objects.get(user=request.user)
         post = Post.objects.create(
-            account=account, file=file, title=title, caption=caption
+            account=account, file=file, title=title, caption=caption, comment_status=comment_status
         )
         post.tags.set(tags)
         return post
