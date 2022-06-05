@@ -71,10 +71,13 @@ class RetrieveUpdateDestroyPostSerializer(serializers.Serializer):
     caption = serializers.CharField(max_length=200)
     tags = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Tags.objects.all()
                                         )
+    comment_status = serializers.BooleanField()
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.caption = validated_data.get('caption', instance.caption)
+        instance.comment_status = validated_data.get(
+            'comment_status', instance.comment_status)
         instance.tags.clear()
         instance.tags.set(validated_data.get('tags', instance.tags))
         instance.save()
