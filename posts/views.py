@@ -51,7 +51,7 @@ class CommentStatusPost(APIView):
             return Response(message, status=status.HTTP_200_OK)
 
 
-class ExplorarPosts(ListAPIView):
+class ExplorerPosts(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ListPostSerializer
     # pagination_class = BasePagination
