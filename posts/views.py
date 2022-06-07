@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
+from follows.models import Following
 
 
 class CreatePost(CreateAPIView):
@@ -58,3 +59,13 @@ class ExplorerPosts(ListAPIView):
 
     def get_queryset(self):
         return Post.objects.filter(~Q(account__user=self.request.user))
+
+
+class HomePosts(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ListPostSerializer
+
+    def get_queryset(self):
+        account_id = list(set(Following.objects.filter(account__user=self.request.user).values_list(
+            'following__id', flat=True)))
+        return Post.objects.filter(account__id__in=account_id)
