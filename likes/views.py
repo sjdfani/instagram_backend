@@ -1,7 +1,10 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveDestroyAPIView
-from .serializer import CreateLikeSerializer, ListLikeSerializer
+from rest_framework.generics import CreateAPIView, ListAPIView
+from .serializer import CreateLikeSerializer, ListLikeSerializer, DestroyLikeSerializer
 from .models import Like
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class CreateLike(CreateAPIView):
@@ -19,7 +22,17 @@ class ListLike(ListAPIView):
         return Like.objects.filter(post__pk=pk)
 
 
-class RetrieveDestroyLike(RetrieveDestroyAPIView):
+class DestroyLike(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = ListLikeSerializer
-    queryset = Like.objects.all()
+
+    def delete(self, request, **kwargs):
+        data = {
+            'account': self.kwargs.get('pk_1'),
+            'post': self.kwargs.get('pk_2')
+        }
+        serializer = DestroyLikeSerializer(
+            data=data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)

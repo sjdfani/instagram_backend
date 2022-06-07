@@ -38,3 +38,27 @@ class ListLikeSerializer(serializers.ModelSerializer):
         res['account'] = AccountSerializer(
             instance.account, context={'request': request}).data
         return res
+
+
+class DestroyLikeSerializer(serializers.Serializer):
+    account = serializers.PrimaryKeyRelatedField(
+        queryset=Account.objects.all()
+    )
+    post = serializers.PrimaryKeyRelatedField(
+        queryset=Post.objects.all()
+    )
+
+    def validate(self, attrs):
+        account = attrs['account']
+        post = attrs['post']
+        if not Like.objects.filter(account=account, post=post).exists():
+            raise serializers.ValidationError(
+                {'message': "you don't like this post."}
+            )
+        return attrs
+
+    def save(self, **kwargs):
+        account = self.validated_data['account']
+        post = self.validated_data['post']
+        obj = Like.objects.get(account=account, post=post)
+        obj.delete()
