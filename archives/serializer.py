@@ -38,3 +38,26 @@ class ListArchiveSerializer(serializers.ModelSerializer):
         res['post'] = ListPostSerializer(
             instance.post, context={'request': request}).data
         return res
+
+
+class DestroyArchiveSerializer(serializers.Serializer):
+    account = serializers.PrimaryKeyRelatedField(
+        queryset=Account.objects.all()
+    )
+    post = serializers.PrimaryKeyRelatedField(
+        queryset=Post.objects.all()
+    )
+
+    def validate(self, attrs):
+        account = attrs['account']
+        post = attrs['post']
+        if not Archive.objects.filter(account=account, post=post).exists():
+            raise serializers.ValidationError(
+                {'message': "You don't archive this post."})
+        return attrs
+
+    def save(self, **kwargs):
+        account = self.validated_data['account']
+        post = self.validated_data['post']
+        obj = Archive.objects.get(account=account, post=post)
+        obj.delete()
