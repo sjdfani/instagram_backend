@@ -23,12 +23,9 @@ class AccountSerializer(serializers.ModelSerializer):
 
 class UpdateInformationSerializer(serializers.Serializer):
     bio = serializers.CharField(max_length=200)
-    birthdate = serializers.DateField()
 
     def update(self, instance, validated_data):
         instance.bio = validated_data.get('bio', instance.bio)
-        instance.birthdate = validated_data.get(
-            'birthdate', instance.birthdate)
         instance.save()
         return instance
 
@@ -61,15 +58,4 @@ class ChangeProfilePhotoSerializer(serializers.Serializer):
         request = self.context['request']
         account = Account.objects.get(user=request.user)
         account.photo = photo
-        account.save()
-
-
-class SetBirthdateSerializer(serializers.Serializer):
-    birthdate = serializers.DateField()
-
-    def save(self, **kwargs):
-        request = self.context['request']
-        birthdate = self.validated_data['birthdate']
-        account = Account.objects.get(user=request.user)
-        account.birthdate = birthdate
         account.save()

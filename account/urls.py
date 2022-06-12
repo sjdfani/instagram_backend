@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AccountDetails, UpdateInformation, ChangeLanguage, ChangeProfilePhoto, SetBirthdate
+from .views import AccountDetails, UpdateInformation, ChangeLanguage, ChangeProfilePhoto
 
 app_name = 'account'
 
@@ -8,5 +8,4 @@ urlpatterns = [
     path('update-information/<int:pk>/', UpdateInformation.as_view()),
     path('change-language/', ChangeLanguage.as_view()),
     path('change-profile-photo/', ChangeProfilePhoto.as_view()),
-    path('set-birthdate/', SetBirthdate.as_view()),
 ]

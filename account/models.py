@@ -16,7 +16,6 @@ class Account(models.Model):
     language = models.CharField(
         max_length=10, choices=Language.choices, default=Language.PERSIAN)
     last_login = models.DateTimeField(null=True, blank=True, default=None)
-    birthdate = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
