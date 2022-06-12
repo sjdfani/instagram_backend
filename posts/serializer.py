@@ -15,7 +15,7 @@ class TagsSerializer(serializers.ModelSerializer):
 class CreatePostSerializer(serializers.Serializer):
     file = serializers.FileField()
     title = serializers.CharField(max_length=50)
-    caption = serializers.CharField(max_length=200, required=False)
+    caption = serializers.CharField(max_length=2000, required=False)
     tags = serializers.SlugRelatedField(
         many=True, slug_field='name', queryset=Tags.objects.all())
     comment_status = serializers.BooleanField()
