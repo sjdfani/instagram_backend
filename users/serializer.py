@@ -13,13 +13,13 @@ class RegisterSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError('Email is exists.')
+            raise serializers.ValidationError({'message': 'Email is exists.'})
         return value
 
     def validate_password(self, value):
         if len(value) < 6:
             raise serializers.ValidationError(
-                'The size of password must be 6 or more.')
+                {'message': 'The size of password must be 6 or more.'})
         return value
 
     def save(self, **kwargs):
@@ -39,7 +39,8 @@ class LoginSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if not CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError('The email is not exists.')
+            raise serializers.ValidationError(
+                {'message': 'The email is not exists.'})
         return value
 
 
@@ -53,7 +54,8 @@ class ForgetPasswordSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if not CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError('The email is not exists.')
+            raise serializers.ValidationError(
+                {'message': 'The email is not exists.'})
         return value
 
     def save(self, **kwargs):
@@ -72,7 +74,8 @@ class VerifyForgetPasswordSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         if not CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError('The email is not exists.')
+            raise serializers.ValidationError(
+                {'message': 'The email is not exists.'})
         return value
 
 

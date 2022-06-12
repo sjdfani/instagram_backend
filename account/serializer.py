@@ -39,7 +39,7 @@ class ChangeLanguageSerializer(serializers.Serializer):
     def validate_language(self, value):
         if value not in ['fa', 'en']:
             raise serializers.ValidationError(
-                'you can choose fa or en for language.')
+                {'message': 'you can choose fa or en for language.'})
         return value
 
     def save(self, **kwargs):
