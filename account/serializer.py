@@ -13,11 +13,12 @@ class AccountSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         res = super().to_representation(instance)
         res['user'] = UserSerializer(instance.user).data
-        res['count'] = {
-            'post': Post.objects.filter(account__id=instance.id).count(),
-            'follower': Follower.objects.filter(account__id=instance.id).count(),
-            'following': Following.objects.filter(account__id=instance.id).count()
-        }
+        res['post'] = list(set(Post.objects.filter(
+            account__id=instance.id).values_list('id', flat=True)))
+        res['follower'] = list(set(Follower.objects.filter(
+            account__id=instance.id).values_list('id', flat=True)))
+        res['following'] = list(set(Following.objects.filter(
+            account__id=instance.id).values_list('id', flat=True)))
         return res
 
 
