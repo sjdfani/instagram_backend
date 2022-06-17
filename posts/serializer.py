@@ -78,8 +78,10 @@ class RetrieveUpdateDestroyPostSerializer(serializers.Serializer):
         instance.caption = validated_data.get('caption', instance.caption)
         instance.comment_status = validated_data.get(
             'comment_status', instance.comment_status)
-        instance.tags.clear()
-        instance.tags.set(validated_data.get('tags', instance.tags))
+        tags_state = validated_data.get('tags', None)
+        if tags_state:
+            instance.tags.clear()
+            instance.tags.set(validated_data.get('tags', instance.tags))
         instance.save()
         return instance
 
