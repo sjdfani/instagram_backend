@@ -62,11 +62,24 @@ class ChangeProfilePhotoSerializer(serializers.Serializer):
         account.save()
 
 
+class AccountInformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['id', 'photo', 'bio', 'user']
+
+    def username_info(self, obj):
+        return {
+            'username': obj.user.username
+        }
+
+    user = serializers.SerializerMethodField('username_info')
+
+
 class ListAccountInformationSerializer(serializers.Serializer):
     accounts_id = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Account.objects.all()
     )
 
     def save(self, **kwargs):
-        account_ids = self.validated_data['account_ids']
-        return AccountSerializer(account_ids, many=True).data
+        accounts_id = self.validated_data['accounts_id']
+        return AccountInformationSerializer(accounts_id, many=True).data
