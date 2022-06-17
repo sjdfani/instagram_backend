@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AccountDetails, UpdateInformation, ChangeLanguage, ChangeProfilePhoto, ListAccountInformation
+from .views import AccountDetails, UpdateInformation, ChangeLanguage, ChangeProfilePhoto, ListAccountInformation, SuggestionAccount
 
 app_name = 'account'
 
@@ -9,4 +9,5 @@ urlpatterns = [
     path('change-language/', ChangeLanguage.as_view()),
     path('change-profile-photo/', ChangeProfilePhoto.as_view()),
     path('list-account-data/', ListAccountInformation.as_view()),
+    path('suggestion-account/', SuggestionAccount.as_view()),
 ]

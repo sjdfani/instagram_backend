@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
+from django.db.models import Q
+import random
 
 
 class AccountDetails(ListAPIView):
@@ -61,3 +63,14 @@ class ListAccountInformation(APIView):
         if serializer.is_valid(raise_exception=True):
             data = serializer.save()
             return Response(data=data, status=status.HTTP_200_OK)
+
+
+class SuggestionAccount(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AccountSerializer
+
+    def get_queryset(self):
+        obj_count = Account.objects.filter(~Q(user=self.request.user)).count()
+        count = obj_count if obj_count < 20 else 20
+        obj = list(Account.objects.filter(~Q(user=self.request.user)))
+        return random.sample(obj, count)
