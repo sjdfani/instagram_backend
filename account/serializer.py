@@ -60,3 +60,13 @@ class ChangeProfilePhotoSerializer(serializers.Serializer):
         account = Account.objects.get(user=request.user)
         account.photo = photo
         account.save()
+
+
+class ListAccountInformationSerializer(serializers.Serializer):
+    accounts_id = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Account.objects.all()
+    )
+
+    def save(self, **kwargs):
+        account_ids = self.validated_data['account_ids']
+        return AccountSerializer(account_ids, many=True).data

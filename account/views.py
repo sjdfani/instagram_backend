@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from .models import Account
-from .serializer import AccountSerializer, UpdateInformationSerializer, ChangeLanguageSerializer, ChangeProfilePhotoSerializer
+from .serializer import AccountSerializer, UpdateInformationSerializer, ChangeLanguageSerializer, ChangeProfilePhotoSerializer, ListAccountInformationSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -49,3 +49,15 @@ class ChangeProfilePhoto(APIView):
             serializer.save()
             message = {'message': 'Change profile photo is successful.'}
             return Response(message, status=status.HTTP_200_OK)
+
+
+class ListAccountInformation(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = ListAccountInformationSerializer(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            data = serializer.save()
+            return Response(data=data, status=status.HTTP_200_OK)
