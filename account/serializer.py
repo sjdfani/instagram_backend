@@ -16,9 +16,9 @@ class AccountSerializer(serializers.ModelSerializer):
         res['post'] = list(set(Post.objects.filter(
             account__id=instance.id).values_list('id', flat=True)))
         res['follower'] = list(set(Follower.objects.filter(
-            account__id=instance.id).values_list('id', flat=True)))
+            account__id=instance.id).values_list('follower__id', flat=True)))
         res['following'] = list(set(Following.objects.filter(
-            account__id=instance.id).values_list('id', flat=True)))
+            account__id=instance.id).values_list('following__id', flat=True)))
         return res
 
 

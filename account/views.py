@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 from django.db.models import Q
 import random
+from follows.models import Following
 
 
 class AccountDetails(ListAPIView):
@@ -56,7 +57,7 @@ class ChangeProfilePhoto(APIView):
 class ListAccountInformation(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def post(self, request):
         serializer = ListAccountInformationSerializer(
             data=request.data, context={'request': request}
         )
@@ -70,7 +71,10 @@ class SuggestionAccount(ListAPIView):
     serializer_class = AccountSerializer
 
     def get_queryset(self):
-        obj_count = Account.objects.filter(~Q(user=self.request.user)).count()
+        accounts_id = list(set(Following.objects.filter(
+            account__user=self.request.user).values_list('following__id', flat=True)))
+        lookup = ~Q(user=self.request.user) & ~Q(id__in=accounts_id)
+        obj = list(Account.objects.filter(lookup))
+        obj_count = Account.objects.filter(lookup).count()
         count = obj_count if obj_count < 20 else 20
-        obj = list(Account.objects.filter(~Q(user=self.request.user)))
         return random.sample(obj, count)
