@@ -37,10 +37,11 @@ class Login(APIView):
                 account.last_login = timezone.now()
                 account.save()
                 account_info = AccountSerializer(account)
-                data = dict()
-                data['account'] = account_info.data
-                data['tokens'] = tokens
-                data['message'] = 'User login successfully'
+                data = {
+                    'account': account_info.data,
+                    'tokens': tokens,
+                    'message': 'Login is successful.'
+                }
                 return Response(data, status=status.HTTP_200_OK)
             else:
                 message = {'message': 'Your password is incorrect.'}
