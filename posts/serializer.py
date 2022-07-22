@@ -25,6 +25,7 @@ class CreatePostSerializer(serializers.Serializer):
         title = validated_data['title']
         caption = validated_data.get('caption')
         tags = validated_data['tags']
+        print(f"tags: {tags}")
         comment_status = validated_data['comment_status']
         request = self.context['request']
         account = Account.objects.get(user=request.user)
@@ -40,7 +41,8 @@ class CreatePostSerializer(serializers.Serializer):
         return res
 
     def to_internal_value(self, data):
-        tags = data.get('tags', [])
+        print(f'data: {data}')
+        tags = data.get('tags', [])       
         for tag in tags:
             Tags.objects.get_or_create(name=tag)
         return super().to_internal_value(data)

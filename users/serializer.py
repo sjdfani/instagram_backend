@@ -1,4 +1,3 @@
-import email
 from rest_framework import serializers
 from .models import CustomUser
 from django.core.mail import send_mail
@@ -61,7 +60,7 @@ class ForgetPasswordSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         email = self.validated_data['email']
-        code = number_generator(8)
+        code = number_generator(5)
         print(f"code : {code}")
         Redis_object.set(email, code, 300)
         message = f'Your verify code is : {code}\nYour code will expire after 5 minute.\n\t\tGood luck'
