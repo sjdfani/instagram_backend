@@ -1,3 +1,4 @@
+import email
 from rest_framework import serializers
 from .models import CustomUser
 from django.core.mail import send_mail
@@ -61,15 +62,26 @@ class ForgetPasswordSerializer(serializers.Serializer):
     def save(self, **kwargs):
         email = self.validated_data['email']
         code = number_generator(8)
+        print(f"code : {code}")
         Redis_object.set(email, code, 300)
         message = f'Your verify code is : {code}\nYour code will expire after 5 minute.\n\t\tGood luck'
-        send_mail('Forget password', message, env(
-            'EMAIL_USEREMAIL'), [email], fail_silently=False)
+        # send_mail('Forget password', message, env(
+        #     'EMAIL_USEREMAIL'), [email], fail_silently=False)
 
 
 class VerifyForgetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     code = serializers.CharField()
+
+    def validate_email(self, value):
+        if not CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                {'message': 'The email is not exists.'})
+        return value
+
+
+class ConfirmForgetPasswordSerializr(serializers.Serializer):
+    email = serializers.EmailField()
     password = serializers.CharField()
 
     def validate_email(self, value):

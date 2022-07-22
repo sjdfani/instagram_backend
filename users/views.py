@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from account.serializer import AccountSerializer
 from config.settings import Redis_object
 from users.models import CustomUser
-from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ForgetPasswordSerializer, VerifyForgetPasswordSerializer, ChangeUsernameSerializer
+from .serializer import RegisterSerializer, LoginSerializer, ChangePasswordSerializer, ForgetPasswordSerializer, VerifyForgetPasswordSerializer, ChangeUsernameSerializer, ConfirmForgetPasswordSerializr
 from .utils import get_tokens_for_user
 from rest_framework.permissions import IsAuthenticated
 from account.models import Account
@@ -86,17 +86,28 @@ class VerifyForgetPassword(APIView):
         if serializer.is_valid(raise_exception=True):
             email = serializer.validated_data['email']
             code = serializer.validated_data['code']
-            password = serializer.validated_data['password']
             redis_code = Redis_object.get(email)
             if code == redis_code:
-                user = CustomUser.objects.get(email=email)
-                user.set_password(password)
-                user.save()
                 message = {'message': 'Change password is successful.'}
                 return Response(message, status=status.HTTP_200_OK)
             else:
                 message = {'message': 'Your input code is invalid.'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmForgetPassword(APIView):
+    def post(self, request):
+        serializer = ConfirmForgetPasswordSerializr(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+            user = CustomUser.objects.get(email=email)
+            user.set_password(password)
+            user.save()
+            message = {'message': 'Change password is successful.'}
+            return Response(message, status=status.HTTP_200_OK)
 
 
 class ChangeUsername(APIView):
