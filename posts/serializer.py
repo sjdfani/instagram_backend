@@ -110,6 +110,12 @@ class RetrievePostSerializer(serializers.ModelSerializer):
         res['tags'] = TagsSerializer(instance.tags, many=True).data
         res['account'] = AccountSerializer(
             instance.account, context={'request': request}).data
+        like_objects = Like.objects.filter(
+            post=instance.id).values_list('account__id', flat=True)
+        res['account_likes'] = list(set(like_objects))
+        archive_objects = Archive.objects.filter(
+            post=instance.id).values_list('account__id', flat=True)
+        res['account_archives'] = list(set(archive_objects))
         return res
 
 
