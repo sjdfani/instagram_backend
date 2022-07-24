@@ -49,26 +49,26 @@ class ChangeLanguageSerializer(serializers.Serializer):
                 {'message': 'you can choose fa or en for language.'})
         return value
 
+    def update(self, instance, validated_data):
+        language = Language.PERSIAN if validated_data['language'] == "fa" else Language.ENGLISH
+        instance.language = language
+        instance.save()
+
     def save(self, **kwargs):
-        language = self.validated_data['language']
-        request = self.context['request']
-        account = Account.objects.get(user=request.user)
-        if language == 'fa':
-            account.language = Language.PERSIAN
-        elif language == 'en':
-            account.language = Language.ENGLISH
-        account.save()
+        account = Account.objects.get(user=self.context['request'].user)
+        self.update(account, self.validated_data)
 
 
 class ChangeProfilePhotoSerializer(serializers.Serializer):
     photo = serializers.ImageField()
 
+    def update(self, instance, validated_data):
+        instance.photo = validated_data.get('photo', instance.photo)
+        instance.save()
+
     def save(self, **kwargs):
-        photo = self.validated_data['photo']
-        request = self.context['request']
-        account = Account.objects.get(user=request.user)
-        account.photo = photo
-        account.save()
+        account = Account.objects.get(user=self.context['request'].user)
+        self.update(account, self.validated_data)
 
 
 class AccountInformationSerializer(serializers.ModelSerializer):

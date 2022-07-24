@@ -34,7 +34,7 @@ class UpdateInformation(APIView):
 class ChangeLanguage(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def patch(self, request):
         serializer = ChangeLanguageSerializer(
             data=request.data, context={'request': request}
         )
@@ -48,7 +48,7 @@ class ChangeProfilePhoto(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser]
 
-    def post(self, request):
+    def patch(self, request):
         serializer = ChangeProfilePhotoSerializer(
             data=request.data, context={'request': request}
         )
