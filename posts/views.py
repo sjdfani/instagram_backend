@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import Post
 from .serializer import CreatePostSerializer, ListPostSerializer, RetrieveUpdateDestroyPostSerializer, RetrievePostSerializer, CommentStatusPostSerializer
@@ -37,6 +37,14 @@ class RetrieveUpdateDestroyPost(RetrieveUpdateDestroyAPIView):
         if self.request.method == "GET":
             return RetrievePostSerializer
         return RetrieveUpdateDestroyPostSerializer
+
+
+class RetrievePost(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = RetrievePostSerializer
+
+    def get_queryset(self):
+        return Post.objects.filter(id=self.kwargs.get('pk'))
 
 
 class CommentStatusPost(APIView):
