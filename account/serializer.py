@@ -24,11 +24,20 @@ class AccountSerializer(serializers.ModelSerializer):
 
 class UpdateInformationSerializer(serializers.Serializer):
     bio = serializers.CharField(max_length=200)
+    username = serializers.CharField(max_length=20)
 
     def update(self, instance, validated_data):
         instance.bio = validated_data.get('bio', instance.bio)
+        instance.user.username = validated_data.get(
+            'username', instance.user.username)
         instance.save()
+        instance.user.save()
         return instance
+
+    def save(self, **kwargs):
+        request = self.context['request']
+        account = Account.objects.get(user=request.user)
+        self.update(account, self.validated_data)
 
 
 class ChangeLanguageSerializer(serializers.Serializer):

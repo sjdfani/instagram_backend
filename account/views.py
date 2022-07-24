@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from .models import Account
 from .serializer import AccountSerializer, UpdateInformationSerializer, ChangeLanguageSerializer, ChangeProfilePhotoSerializer, ListAccountInformationSerializer
@@ -19,12 +19,16 @@ class AccountDetails(ListAPIView):
         return Account.objects.filter(pk=self.kwargs.get('pk'))
 
 
-class UpdateInformation(UpdateAPIView):
+class UpdateInformation(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = UpdateInformationSerializer
 
-    def get_queryset(self):
-        return Account.objects.filter(user=self.request.user)
+    def patch(self, request):
+        serializer = UpdateInformationSerializer(
+            data=request.data, context={'request': request}
+        )
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ChangeLanguage(APIView):
