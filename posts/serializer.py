@@ -65,6 +65,7 @@ class ListPostSerializer(serializers.ModelSerializer):
         archive_objects = Archive.objects.filter(
             post=instance.id).values_list('account__id', flat=True)
         res['account_archives'] = list(set(archive_objects))
+        res['like_count'] = Like.objects.filter(post__id=instance.id).count()
         return res
 
 
@@ -116,6 +117,7 @@ class RetrievePostSerializer(serializers.ModelSerializer):
         archive_objects = Archive.objects.filter(
             post=instance.id).values_list('account__id', flat=True)
         res['account_archives'] = list(set(archive_objects))
+        res['like_count'] = Like.objects.filter(post__id=instance.id).count()
         return res
 
 
