@@ -40,6 +40,7 @@ class RegisterSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         self.create(self.validated_data)
+        return {'message': 'Register is successful.'}
 
 
 class LoginSerializer(serializers.Serializer):
@@ -67,14 +68,17 @@ class ForgetPasswordSerializer(serializers.Serializer):
                 {'message': 'The email is not exists.'})
         return value
 
-    def save(self, **kwargs):
-        email = self.validated_data['email']
+    def process(self, email):
         code = number_generator(5)
         print(f"code : {code}")
         Redis_object.set(email, code, 300)
         message = f'Your verify code is : {code}\nYour code will expire after 5 minute.\n\t\tGood luck'
         # send_mail('Forget password', message, env(
         #     'EMAIL_USEREMAIL'), [email], fail_silently=False)
+
+    def save(self, **kwargs):
+        email = self.validated_data['email']
+        self.process(email)
 
 
 class VerifyForgetPasswordSerializer(serializers.Serializer):
@@ -87,6 +91,18 @@ class VerifyForgetPasswordSerializer(serializers.Serializer):
                 {'message': 'The email is not exists.'})
         return value
 
+    def process(self, email, code):
+        redis_code = Redis_object.get(email)
+        if code == redis_code:
+            return (True, {'message': 'Your input code is correct.'})
+        else:
+            return (False, {'message': 'Your input code is invalid.'})
+
+    def save(self, **kwargs):
+        email = self.validated_data['email']
+        code = self.validated_data['code']
+        return self.process(email, code)
+
 
 class ConfirmForgetPasswordSerializr(serializers.Serializer):
     email = serializers.EmailField()
@@ -98,6 +114,17 @@ class ConfirmForgetPasswordSerializr(serializers.Serializer):
                 {'message': 'The email is not exists.'})
         return value
 
+    def process(self, email, password):
+        user = CustomUser.objects.get(email=email)
+        user.set_password(password)
+        user.save()
+        return {'message': 'Change password is successful.'}
+
+    def save(self, **kwargs):
+        email = self.validated_data['email']
+        password = self.validated_data['password']
+        return self.process(email, password)
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -108,9 +135,11 @@ class UserSerializer(serializers.ModelSerializer):
 class ChangeUsernameSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=20)
 
+    def update(self, instance, validated_data):
+        instance.username = validated_data['username']
+        instance.save()
+
     def save(self, **kwargs):
-        request = self.context['request']
-        username = self.validated_data['username']
-        user = CustomUser.objects.get(email=request.user.email)
-        user.username = username
-        user.save()
+        user = CustomUser.objects.get(email=self.context['request'].user.email)
+        self.update(user, self.validated_data)
+        return {'message': 'Change username is successful.'}

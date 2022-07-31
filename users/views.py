@@ -17,8 +17,7 @@ class Register(APIView):
             data=request.data, context={'request': request}
         )
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            message = {'message': 'Register is successful.'}
+            message = serializer.save()
             return Response(message, status=status.HTTP_201_CREATED)
 
 
@@ -85,14 +84,10 @@ class VerifyForgetPassword(APIView):
             data=request.data, context={'request': request}
         )
         if serializer.is_valid(raise_exception=True):
-            email = serializer.validated_data['email']
-            code = serializer.validated_data['code']
-            redis_code = Redis_object.get(email)
-            if code == redis_code:
-                message = {'message': 'Change password is successful.'}
+            status, message = serializer.save()
+            if status:
                 return Response(message, status=status.HTTP_200_OK)
             else:
-                message = {'message': 'Your input code is invalid.'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -102,23 +97,17 @@ class ConfirmForgetPassword(APIView):
             data=request.data, context={'request': request}
         )
         if serializer.is_valid(raise_exception=True):
-            email = serializer.validated_data['email']
-            password = serializer.validated_data['password']
-            user = CustomUser.objects.get(email=email)
-            user.set_password(password)
-            user.save()
-            message = {'message': 'Change password is successful.'}
+            message = serializer.save()
             return Response(message, status=status.HTTP_200_OK)
 
 
 class ChangeUsername(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def patch(self, request):
         serializer = ChangeUsernameSerializer(
             data=request.data, context={'request': request}
         )
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            message = {'message': 'Change username is successful.'}
+            message = serializer.save()
             return Response(message, status=status.HTTP_200_OK)
