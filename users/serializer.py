@@ -16,21 +16,30 @@ class RegisterSerializer(serializers.Serializer):
             raise serializers.ValidationError({'message': 'Email is exists.'})
         return value
 
+    def validate_username(self, value):
+        if CustomUser.objects.filter(username=value).exists():
+            raise serializers.ValidationError(
+                {'message': 'username is exists.'})
+        return value
+
     def validate_password(self, value):
         if len(value) < 6:
             raise serializers.ValidationError(
                 {'message': 'The size of password must be 6 or more.'})
         return value
 
-    def save(self, **kwargs):
-        email = self.validated_data['email']
-        username = self.validated_data['username']
-        password = self.validated_data['password']
+    def create(self, validated_data):
+        email = validated_data['email']
+        username = validated_data['username']
+        password = validated_data['password']
         user = CustomUser.objects.create(
             email=email, username=username, password=password)
         user.set_password(password)
         user.save()
         Account.objects.create(user=user)
+
+    def save(self, **kwargs):
+        self.create(self.validated_data)
 
 
 class LoginSerializer(serializers.Serializer):
