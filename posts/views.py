@@ -76,4 +76,6 @@ class HomePosts(ListAPIView):
     def get_queryset(self):
         account_id = list(set(Following.objects.filter(account__user=self.request.user).values_list(
             'following__id', flat=True)))
-        return Post.objects.filter(account__id__in=account_id)
+        lookup = Q(account__id__in=account_id) | Q(
+            account__user=self.request.user)
+        return Post.objects.filter(lookup).order_by('-created_at')

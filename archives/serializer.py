@@ -50,8 +50,11 @@ class DestroyArchiveSerializer(serializers.Serializer):
                 {'message': "You don't archive this post."})
         return attrs
 
-    def save(self, **kwargs):
+    def delete_obj(self, validated_data):
         account = Account.objects.get(user=self.context['request'].user)
-        post = self.validated_data['post']
+        post = validated_data['post']
         obj = Archive.objects.get(account=account, post=post)
         obj.delete()
+
+    def save(self, **kwargs):
+        self.delete_obj(self.validated_data)
