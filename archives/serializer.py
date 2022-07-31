@@ -9,20 +9,17 @@ class CreateArchivePostSerializer(serializers.Serializer):
     post = serializers.PrimaryKeyRelatedField(
         queryset=Post.objects.all()
     )
-    account = serializers.PrimaryKeyRelatedField(
-        queryset=Account.objects.all()
-    )
 
     def validate(self, attrs):
         post = attrs['post']
-        account = attrs['account']
+        account = Account.objects.get(user=self.context['request'].user)
         if Archive.objects.filter(post=post, account=account).exists():
             raise serializers.ValidationError(
                 {'message': 'you archived this post.'})
         return attrs
 
     def create(self, validated_data):
-        account = validated_data['account']
+        account = Account.objects.get(user=self.context['request'].user)
         post = validated_data['post']
         return Archive.objects.create(account=account, post=post)
 
@@ -41,15 +38,12 @@ class ListArchiveSerializer(serializers.ModelSerializer):
 
 
 class DestroyArchiveSerializer(serializers.Serializer):
-    account = serializers.PrimaryKeyRelatedField(
-        queryset=Account.objects.all()
-    )
     post = serializers.PrimaryKeyRelatedField(
         queryset=Post.objects.all()
     )
 
     def validate(self, attrs):
-        account = attrs['account']
+        account = Account.objects.get(user=self.context['request'].user)
         post = attrs['post']
         if not Archive.objects.filter(account=account, post=post).exists():
             raise serializers.ValidationError(
@@ -57,7 +51,7 @@ class DestroyArchiveSerializer(serializers.Serializer):
         return attrs
 
     def save(self, **kwargs):
-        account = self.validated_data['account']
+        account = Account.objects.get(user=self.context['request'].user)
         post = self.validated_data['post']
         obj = Archive.objects.get(account=account, post=post)
         obj.delete()
