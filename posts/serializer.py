@@ -4,6 +4,7 @@ from account.models import Account
 from account.serializer import AccountSerializer
 from likes.models import Like
 from archives.models import Archive
+from django.db.models import Q
 
 
 class TagsSerializer(serializers.ModelSerializer):
@@ -63,6 +64,8 @@ class ListPostSerializer(serializers.ModelSerializer):
             post=instance.id).values_list('account__id', flat=True)
         res['account_archives'] = list(set(archive_objects))
         res['like_count'] = Like.objects.filter(post__id=instance.id).count()
+        res['is_like'] = Like.objects.filter(
+            Q(post_id=instance.id) & Q(account__user=request.user)).exists()
         return res
 
 
@@ -112,6 +115,8 @@ class RetrievePostSerializer(serializers.ModelSerializer):
             post=instance.id).values_list('account__id', flat=True)
         res['account_archives'] = list(set(archive_objects))
         res['like_count'] = Like.objects.filter(post__id=instance.id).count()
+        res['is_like'] = Like.objects.filter(
+            Q(post_id=instance.id) & Q(account__user=request.user)).exists()
         return res
 
 
