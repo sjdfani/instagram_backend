@@ -27,8 +27,7 @@ class DestroyLike(APIView):
 
     def delete(self, request, **kwargs):
         data = {
-            'account': self.kwargs.get('pk_1'),
-            'post': self.kwargs.get('pk_2')
+            'post': self.kwargs.get('pk')
         }
         serializer = DestroyLikeSerializer(
             data=data, context={'request': request}
