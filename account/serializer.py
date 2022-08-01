@@ -17,8 +17,12 @@ class AccountSerializer(serializers.ModelSerializer):
             account__id=instance.id).count()
         res['follower_count'] = Follower.objects.filter(
             account__id=instance.id).count()
+        res['follower_list'] = list(set(Follower.objects.filter(
+            account__id=instance.id).values_list('follower__id', flat=True)))
         res['following_count'] = Following.objects.filter(
             account__id=instance.id).count()
+        res['following_list'] = list(set(Following.objects.filter(
+            account__id=instance.id).values_list('following__id', flat=True)))
         return res
 
 
