@@ -36,12 +36,6 @@ class ListFollowing(ListAPIView):
         return Following.objects.filter(account__id=self.kwargs.get('pk'))
 
 
-class CreateFollower(CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = Follower.objects.all()
-    serializer_class = CreateFollowerSerializer
-
-
 class DestroyFollower(APIView):
     permission_classes = [IsAuthenticated]
 
