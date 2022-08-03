@@ -1,6 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 from follows.models import Follower, Following
-from .serializer import CreateFollowerSerializer, CreateFollowingSerializer, FollowerSerializer, FollowingSerializer, DestroyFollowingSerializer, DestroyFollowerSerializer
+from .serializer import CreateFollowingSerializer, FollowerSerializer, FollowingSerializer, DestroyFollowingSerializer, DestroyFollowerSerializer
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
