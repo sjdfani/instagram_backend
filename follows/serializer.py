@@ -20,6 +20,7 @@ class CreateFollowingSerializer(serializers.Serializer):
     def create(self, validated_data):
         following = validated_data['following']
         account = Account.objects.get(user=self.context['request'].user)
+        Follower.objects.create(account=following, follower=account)
         return Following.objects.create(account=account, following=following)
 
 
@@ -61,25 +62,6 @@ class DestroyFollowingSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         self.delete_obj(self.validated_data)
-
-
-class CreateFollowerSerializer(serializers.Serializer):
-    follower = serializers.PrimaryKeyRelatedField(
-        queryset=Account.objects.all()
-    )
-
-    def validate(self, attrs):
-        follower = attrs['follower']
-        account = Account.objects.get(user=self.context['request'].user)
-        if Follower.objects.filter(follower=follower, account=account).exists():
-            raise serializers.ValidationError(
-                {'message': 'you have this account as follower.'})
-        return attrs
-
-    def create(self, validated_data):
-        follower = validated_data['follower']
-        account = Account.objects.get(user=self.context['request'].user)
-        return Follower.objects.create(account=account, follower=follower)
 
 
 class FollowerSerializer(serializers.ModelSerializer):
